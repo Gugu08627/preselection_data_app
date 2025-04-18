@@ -18,10 +18,10 @@ if employment_file is not None and education_file is not None:
     edu_df = pd.read_excel(education_file)
     
     st.write("Employment 数据：")
-    st.write(df_employment.head())
+    st.write(df.head())
     
     st.write("Education 数据：")
-    st.write(df_education.head())
+    st.write(edu_df.head())
 
 def calc_work_length(row):
     if pd.isnull(row['Start Date']) or pd.isnull(row['End Date']):
