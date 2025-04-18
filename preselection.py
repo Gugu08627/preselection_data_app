@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 from datetime import datetime
+import io
 
 # Streamlit file upload component
 employment_file = st.file_uploader("Upload Employment data file (Excel format)", type="xlsx")
@@ -127,20 +128,27 @@ if employment_file is not None and education_file is not None:
     # Fill 'Current Grade' with 'N/A' where missing
     final_df['Current Grade'] = final_df['Current Grade'].fillna('N/A')
 
-    # Reorder columns
+    # Reorder the final DataFrame
     final_df = final_df[[
         'First Name', 'Last Name', 'Age', 'Current Grade', 'Internal/External', 'Primary Nationality', 
         'Geo Dist. Representation', 'Previous working experience', 'Highest Education'
     ]]
-
+    
     # Display the final cleaned data
     st.write("Final Cleaned Data:")
     st.write(final_df)
-
+    
+    # Create an in-memory buffer to save the DataFrame as Excel
+    output = io.BytesIO()
+    final_df.to_excel(output, index=False, engine='openpyxl')
+    
+    # Seek to the beginning of the BytesIO buffer
+    output.seek(0)
+    
     # Option to download the cleaned data
     st.download_button(
         label="Download Cleaned Data",
-        data=final_df.to_excel(index=False, engine='openpyxl'),
+        data=output,
         file_name='final_cleaned_data.xlsx',
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
