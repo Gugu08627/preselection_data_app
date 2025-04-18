@@ -8,8 +8,20 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
-# 读取 employment 数据
-df = pd.read_excel('employment.xlsx')
+import streamlit as st
+
+employment_file = st.file_uploader("Upload Employment Data (Excel format)", type="xlsx")
+education_file = st.file_uploader("Upload Education Data (Excel format)", type="xlsx")
+
+if employment_file is not None and education_file is not None:
+    df = pd.read_excel(employment_file)
+    edu_df = pd.read_excel(education_file)
+    
+    st.write("Employment 数据：")
+    st.write(df_employment.head())
+    
+    st.write("Education 数据：")
+    st.write(df_education.head())
 
 def calc_work_length(row):
     if pd.isnull(row['Start Date']) or pd.isnull(row['End Date']):
@@ -49,8 +61,6 @@ summary_df.rename(columns={'Grade (for UN staff)': 'Current Grade'}, inplace=Tru
 summary_df['Previous working experience'] = summary_df['Previous working experience'].str.replace(r',\s*,', ',', regex=True)
 summary_df['Previous working experience'] = summary_df['Previous working experience'].str.replace(r'\s+,', ',', regex=True)
 
-# 读取 education 数据
-edu_df = pd.read_excel('education.xlsx')
 
 # 计算年龄
 edu_df['Age'] = edu_df['Date of Birth'].apply(
