@@ -110,12 +110,16 @@ if employment_file is not None and education_file is not None:
         edu_keep_df['Country'].fillna('') + ') - ' +
         edu_keep_df['Main subject'].fillna('')
     )
-
-    # Extract relevant columns for education summary
-    edu_summary_df = edu_keep_df[[
-        'First Name', 'Last Name', 'Age', 'Internal/External',
-        'Highest Education', 'Geo Dist. Representation', 'Primary Nationality'
-    ]]
+    
+    # Group by First Name, Last Name to merge multiple highest education records into one cell
+    edu_summary_df = edu_keep_df.groupby(['First Name', 'Last Name']).agg({
+        'Age': 'first',
+        'Internal/External': 'first',
+        'Geo Dist. Representation': 'first',
+        'Primary Nationality': 'first',
+        'Highest Education': lambda x: '\n'.join(x)
+    }).reset_index()
+    
 
     # Merge with the final summary data
     final_df = summary_df.merge(edu_summary_df, on=['First Name', 'Last Name'], how='left')
