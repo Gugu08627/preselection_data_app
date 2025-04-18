@@ -6,22 +6,25 @@
 
 import pandas as pd
 import numpy as np
+import streamlit as st
 from datetime import datetime
 
-import streamlit as st
+# Streamlit file upload component
+employment_file = st.file_uploader("Upload Employment data file (Excel format)", type="xlsx")
+education_file = st.file_uploader("Upload Education data file (Excel format)", type="xlsx")
 
-employment_file = st.file_uploader("Upload Employment Data (Excel format)", type="xlsx")
-education_file = st.file_uploader("Upload Education Data (Excel format)", type="xlsx")
-
+# Ensure processing happens only after both files are uploaded
 if employment_file is not None and education_file is not None:
+    # Read the uploaded Excel files
     df = pd.read_excel(employment_file)
     edu_df = pd.read_excel(education_file)
     
-    st.write("Employment 数据：")
-    st.write(df.head())
-    
-    st.write("Education 数据：")
-    st.write(edu_df.head())
+    # Display the first few rows of Employment and Education data
+    st.write("Employment Data:")
+    st.write(df.head())  # Display first few rows of Employment data
+
+    st.write("Education Data:")
+    st.write(edu_df.head())  # Display first few rows of Education data
 
 def calc_work_length(row):
     if pd.isnull(row['Start Date']) or pd.isnull(row['End Date']):
